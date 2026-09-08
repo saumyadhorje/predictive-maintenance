@@ -1,0 +1,24 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Large saved datasets
+notebooks/saved_model_original/X_train.pkl
+notebooks/saved_model_original/X_test.pkl
+notebooks/saved_model_original/y_train.pkl
+notebooks/saved_model_original/y_test.pkl
+
+# Large raw datasets
+data/raw/
+
+# OS files
+.DS_Store
+Thumbs.db
+# Old notebook model backup
+notebooks/saved_model_original/
