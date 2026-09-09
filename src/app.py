@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 import joblib
 import json
 import numpy as np
@@ -15,7 +16,21 @@ app = FastAPI(
     description="API for predicting machine failure using XGBoost",
     version="1.0.0"
 )
+# --------------------------------------------------
+# CORS configuration
+# --------------------------------------------------
 
+# --------------------------------------------------
+# CORS configuration
+# --------------------------------------------------
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex=r"http://(localhost|127\.0\.0\.1):5173",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # --------------------------------------------------
 # Paths
