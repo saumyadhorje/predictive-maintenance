@@ -5,7 +5,8 @@ import joblib
 import json
 import numpy as np
 import os
-
+import shap
+import pandas as pd
 
 # --------------------------------------------------
 # FastAPI application
@@ -62,6 +63,7 @@ with open(
 
 threshold = float(threshold_data["threshold"])
 
+explainer = shap.TreeExplainer(model)
 
 # --------------------------------------------------
 # Request schema
@@ -155,4 +157,48 @@ def predict(data: PredictionInput):
         "failure_probability": round(probability, 4),
         "threshold": threshold,
         "prediction": prediction
+    }
+
+
+@app.post("/explain")
+def explain(data: PredictionInput):
+    input_data = data.model_dump()
+
+    values = [input_data[feature] for feature in feature_names]
+
+    X = pd.DataFrame(
+        [values],
+        columns=feature_names,
+    )
+
+    # Prediction probability
+    probability = float(model.predict_proba(X)[0][1])
+
+    # SHAP values
+    shap_values = explainer.shap_values(X)
+
+    # Get SHAP values for this prediction
+    values = shap_values[0]
+
+    # Sort features by absolute SHAP impact
+    feature_impacts = []
+
+    for feature, shap_value in zip(feature_names, values):
+        feature_impacts.append(
+            {
+                "feature": feature,
+                "shap_value": round(float(shap_value), 6),
+                "impact": "increases risk" if shap_value > 0 else "decreases risk",
+            }
+        )
+
+    feature_impacts.sort(
+        key=lambda x: abs(x["shap_value"]),
+        reverse=True,
+    )
+
+    return {
+        "failure_probability": round(probability, 4),
+        "prediction": "FAILURE" if probability >= threshold else "NO FAILURE",
+        "top_features": feature_impacts[:5],
     }
