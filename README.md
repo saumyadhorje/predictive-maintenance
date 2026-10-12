@@ -11,7 +11,7 @@ An end-to-end machine learning system that predicts equipment failure within the
 - Achieves **96.14% ROC-AUC** with the XGBoost classifier.
 - Achieves **71.04% failure recall** at a tuned decision threshold of **0.40**.
 - Provides SHAP-based explainability to identify the **top five features** contributing to individual predictions.
-- Includes an interactive React dashboard connected to a FastAPI prediction API.
+- Includes an interactive React dashboard connected to a FastAPI prediction API
 
 ## Model Performance
 
